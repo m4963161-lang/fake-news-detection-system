@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}About - FakeDetect System{% endblock %}
+
+{% block content %}
+<div class="about-page-container">
+    <!-- HERO -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4 p-md-5">
+            <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill fw-bold mb-3">Project Documentation</span>
+            <h1 class="h3 fw-bold text-dark mb-3">FAKE NEWS DETECTION SYSTEM</h1>
+            <p class="text-secondary lead fs-6 mb-0">
+                A state-of-the-art machine learning web application designed to counter disinformation by classifying news articles and headlines into <strong>REAL</strong> or <strong>FAKE</strong> using Natural Language Processing (NLP), TF-IDF statistical feature engineering, and regularized Logistic Regression.
+            </p>
+        </div>
+    </div>
+
+    <!-- TECHNOLOGIES USED SECTION -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-2">
+            <h5 class="fw-bold text-dark mb-0">
+                <i class="bi bi-stack text-primary me-2"></i>Technologies & Libraries Used
+            </h5>
+            <p class="text-muted small mb-0">Robust full-stack data science and web development ecosystem</p>
+        </div>
+        <div class="card-body px-4 py-3">
+            <div class="d-flex flex-wrap gap-2">
+                <span class="badge bg-dark text-white px-3 py-2 rounded-3 fs-6"><i class="bi bi-code-slash me-1"></i>Python 3.11+</span>
+                <span class="badge bg-primary px-3 py-2 rounded-3 fs-6"><i class="bi bi-lightning-charge me-1"></i>Flask</span>
+                <span class="badge bg-info text-dark px-3 py-2 rounded-3 fs-6"><i class="bi bi-diagram-3 me-1"></i>Scikit-learn</span>
+                <span class="badge bg-success px-3 py-2 rounded-3 fs-6"><i class="bi bi-chat-left-dots me-1"></i>NLP</span>
+                <span class="badge bg-secondary px-3 py-2 rounded-3 fs-6"><i class="bi bi-book me-1"></i>NLTK</span>
+                <span class="badge bg-primary px-3 py-2 rounded-3 fs-6"><i class="bi bi-calculator me-1"></i>TF-IDF Vectorizer</span>
+                <span class="badge bg-warning text-dark px-3 py-2 rounded-3 fs-6"><i class="bi bi-database me-1"></i>SQLite & SQLAlchemy</span>
+                <span class="badge bg-danger px-3 py-2 rounded-3 fs-6"><i class="bi bi-filetype-html me-1"></i>HTML5 & CSS3</span>
+                <span class="badge bg-warning text-dark px-3 py-2 rounded-3 fs-6"><i class="bi bi-filetype-js me-1"></i>JavaScript (ES6)</span>
+                <span class="badge bg-purple text-white px-3 py-2 rounded-3 fs-6" style="background-color: #6f42c1;"><i class="bi bi-bootstrap me-1"></i>Bootstrap 5</span>
+                <span class="badge bg-info text-dark px-3 py-2 rounded-3 fs-6"><i class="bi bi-pie-chart me-1"></i>Chart.js</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ARCHITECTURE FLOWCHART -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-2">
+            <h5 class="fw-bold text-dark mb-0">
+                <i class="bi bi-diagram-2 text-primary me-2"></i>System Architecture Pipeline
+            </h5>
+            <p class="text-muted small mb-0">End-to-end data processing and classification lifecycle</p>
+        </div>
+        <div class="card-body px-4 py-3">
+            <div class="bg-dark text-light p-4 rounded-3 font-monospace overflow-auto" style="font-size: 13px; line-height: 1.6;">
+USER
+ │
+ ▼
+FLASK WEB INTERFACE (HTML5 / Bootstrap 5 / JavaScript)
+ │
+ ▼
+NEWS TEXT INPUT (Headline or Article body up to 5,000 chars)
+ │
+ ▼
+TEXT PREPROCESSING (Lowercasing, URL/HTML stripping, Punctuation & Stopwords removal)
+ │
+ ▼
+TF-IDF VECTORIZER (N-gram range (1,2), Sublinear Term Frequency, 5000 max features)
+ │
+ ▼
+LOGISTIC REGRESSION MODEL (L2 Regularized, Calibrated Sigmoid Probabilities)
+ │
+ ▼
+PREDICTION
+┌───────────────┴───────────────┐
+▼                               ▼
+REAL NEWS                     FAKE NEWS
+│                               │
+└───────────────┬───────────────┘
+                ▼
+         CONFIDENCE SCORE
+                │
+                ▼
+         SQLITE DATABASE (Flask-SQLAlchemy)
+                │
+     ┌──────────┴──────────┐
+     ▼                     ▼
+PREDICTION HISTORY    ANALYTICS DASHBOARD
+            </div>
+        </div>
+    </div>
+
+    <!-- ML & NLP METHODOLOGY DETAILS -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-2">
+                    <h5 class="fw-bold text-dark mb-0">1. NLP Preprocessing Pipeline</h5>
+                </div>
+                <div class="card-body px-4 py-3 text-secondary small">
+                    <ol class="ps-3 mb-0">
+                        <li class="mb-2"><strong>Lowercasing:</strong> Standardizes all text into uniform lower case to avoid case sensitivity discrepancies.</li>
+                        <li class="mb-2"><strong>Regex Stripping:</strong> Removes URL web links (`http://`, `https://`, `www.`), HTML tags, entities, and numeric noise.</li>
+                        <li class="mb-2"><strong>Punctuation Removal:</strong> Eliminates excessive question marks, exclamation marks, and typographical symbols.</li>
+                        <li class="mb-2"><strong>Stopword Filtering:</strong> Removes high-frequency grammatical tokens (e.g. `the`, `and`, `in`, `is`) that convey negligible semantic classification signal.</li>
+                        <li><strong>Tokenization & Normalization:</strong> Tokenizes word boundaries and strips extra spaces into a coherent clean sequence.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white border-bottom-0 pt-4 px-4 pb-2">
+                    <h5 class="fw-bold text-dark mb-0">2. TF-IDF & Logistic Classification</h5>
+                </div>
+                <div class="card-body px-4 py-3 text-secondary small">
+                    <p class="mb-2">
+                        <strong>Term Frequency - Inverse Document Frequency (TF-IDF):</strong> Measures how important a word is to a document relative to the entire corpus:
+                    </p>
+                    <div class="p-2 bg-light rounded border font-monospace text-center my-2">
+                        TF-IDF(t, d, D) = TF(t, d) × log( |D| / (1 + DF(t, D)) )
+                    </div>
+                    <p class="mb-2">
+                        <strong>Logistic Regression Classifier:</strong> Applies the standard logistic sigmoid function to predict the probability \( P(Y=1|X) \):
+                    </p>
+                    <div class="p-2 bg-light rounded border font-monospace text-center my-2">
+                        P(Fake|x) = 1 / (1 + e^-(w · x + b))
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

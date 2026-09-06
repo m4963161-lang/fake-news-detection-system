@@ -1,0 +1,38 @@
+# Python virtual environment
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Environment variables / secrets
+.env*
+!.env.example
+
+# Django local database
+db.sqlite3
+
+# Django collected static files
+staticfiles/
+
+# Node dependencies
+node_modules/
+
+# Frontend build output
+build/
+dist/
+coverage/
+
+# Logs
+*.log
+
+# IDE
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db

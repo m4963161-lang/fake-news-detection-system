@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}Prediction History - FakeDetect{% endblock %}
+
+{% block content %}
+<div class="history-page-container">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <h2 class="h4 fw-bold mb-1">Prediction History</h2>
+            <p class="text-muted small mb-0">Review all previous news analysis records stored in the SQLite database.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <!-- FILTER BUTTONS -->
+            <div class="btn-group btn-group-sm" role="group">
+                <a href="{{ url_for('history') }}" class="btn btn-outline-secondary {% if not active_filter %}active{% endif %}">All</a>
+                <a href="{{ url_for('history', filter='REAL') }}" class="btn btn-outline-success {% if active_filter == 'REAL' %}active{% endif %}">Real News</a>
+                <a href="{{ url_for('history', filter='FAKE') }}" class="btn btn-outline-danger {% if active_filter == 'FAKE' %}active{% endif %}">Fake News</a>
+            </div>
+
+            <!-- CLEAR HISTORY BUTTON (triggers modal) -->
+            {% if records %}
+            <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#clearHistoryModal">
+                <i class="bi bi-trash3 me-1"></i>CLEAR HISTORY
+            </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- HISTORY TABLE CARD -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            {% if records %}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 history-table">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4" style="width: 70px;">ID</th>
+                            <th>News Headline / Excerpt</th>
+                            <th style="width: 140px;">Result</th>
+                            <th style="width: 160px;">Confidence</th>
+                            <th style="width: 200px;">Date & Time</th>
+                            <th class="pe-4 text-end" style="width: 100px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in records %}
+                        <tr>
+                            <td class="ps-4 fw-bold text-muted">#{{ item.id }}</td>
+                            <td>
+                                <div class="news-text-cell" title="{{ item.news_text }}">
+                                    {{ item.news_text|truncate(120, true, '...') }}
+                                </div>
+                            </td>
+                            <td>
+                                {% if item.prediction == 'REAL' %}
+                                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill fw-bold">
+                                    <i class="bi bi-check-circle-fill me-1"></i>REAL
+                                </span>
+                                {% else %}
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-pill fw-bold">
+                                    <i class="bi bi-exclamation-triangle-fill me-1"></i>FAKE
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="fw-bold {% if item.prediction == 'REAL' %}text-success{% else %}text-danger{% endif %}">
+                                        {{ "%.2f"|format(item.confidence) }}%
+                                    </span>
+                                    <div class="progress flex-grow-1" style="height: 6px;">
+                                        <div class="progress-bar {% if item.prediction == 'REAL' %}bg-success{% else %}bg-danger{% endif %}" 
+                                             role="progressbar" 
+                                             style="width: {{ item.confidence }}%;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-muted small">
+                                <i class="bi bi-clock me-1"></i>{{ item.created_at.strftime('%d %b %Y %I:%M %p') }}
+                            </td>
+                            <td class="pe-4 text-end">
+                                <a href="{{ url_for('result', id=item.id) }}" class="btn btn-sm btn-light border text-primary" title="View Details">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="p-5 text-center text-muted">
+                <i class="bi bi-inbox fs-1 text-secondary mb-3 d-block"></i>
+                <h5 class="fw-bold text-dark">No Prediction Records Found</h5>
+                <p class="small mb-3">You haven't run any news checks yet or history was cleared.</p>
+                <a href="{{ url_for('index') }}" class="btn btn-primary btn-sm px-3">
+                    <i class="bi bi-plus-circle me-1"></i>Analyze News Now
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- CLEAR HISTORY CONFIRMATION MODAL -->
+<div class="modal fade" id="clearHistoryModal" tabindex="-1" aria-labelledby="clearHistoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-bottom-0 pb-0">
+                <h5 class="modal-title fw-bold text-danger" id="clearHistoryModalLabel">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>Confirm Clear History
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-4">
+                <p class="mb-0 text-muted">Are you sure you want to delete all historical prediction records from the SQLite database? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer border-top-0 pt-0">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <form action="{{ url_for('clear_history') }}" method="POST">
+                    <button type="submit" class="btn btn-danger">Yes, Clear All History</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

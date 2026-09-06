@@ -1,0 +1,6 @@
+{
+  "name": "FakeDetect - Fake News Detection System",
+  "description": "Professional Fake News Detection System using Machine Learning, NLP text preprocessing, TF-IDF vectorization, confidence scoring, and interactive analytics dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

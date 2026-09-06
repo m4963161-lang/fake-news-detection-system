@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Check News - Django Fake News Detection System{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Main Form Section -->
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+            <div class="card-header bg-white border-bottom py-3 px-4 d-flex align-items-center justify-between">
+                <div>
+                    <h5 class="mb-0 fw-bold text-dark"><i class="bi bi-shield-check text-primary me-2"></i>News Forensic Verification Console</h5>
+                    <small class="text-muted">Enter a news headline or article body to evaluate credibility using Django & Scikit-learn</small>
+                </div>
+                <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-1 font-monospace">Django Form + CSRF</span>
+            </div>
+            <div class="card-body p-4">
+                <form action="{% url 'detector:predict' %}" method="POST" id="newsForm">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="news_text_input" class="form-label fw-semibold text-secondary small text-uppercase">
+                            Headline or Full Article Content
+                        </label>
+                        {{ form.news_text }}
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <span class="text-muted small" id="charCounter">Minimum 20 characters required</span>
+                            <span class="text-muted small font-monospace">Max 5,000 chars</span>
+                        </div>
+                    </div>
+
+                    <!-- Preset Samples Bar -->
+                    <div class="mb-4">
+                        <span class="text-muted small fw-semibold d-block mb-2">Or Load One-Click Preset Samples:</span>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for sample in samples %}
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill sample-btn" 
+                                    data-text="{{ sample.text }}"
+                                    data-type="{{ sample.type }}">
+                                <i class="bi {% if sample.type == 'REAL' %}bi-check-circle text-success{% else %}bi-exclamation-triangle text-danger{% endif %} me-1"></i>
+                                {{ sample.title }}
+                            </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary px-4 py-2 rounded-3 fw-bold" id="submitBtn">
+                            <i class="bi bi-cpu me-2"></i>Run AI Forensic Verification
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary px-3 py-2 rounded-3" id="clearBtn">
+                            Clear
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats & Guidance Sidebar -->
+    <div class="col-lg-4">
+        <div class="card shadow-sm border-0 rounded-4 p-4 mb-4">
+            <h6 class="fw-bold text-dark mb-3"><i class="bi bi-info-circle text-primary me-2"></i>Django MVT Engine</h6>
+            <p class="text-muted small leading-relaxed">
+                Submissions are validated using Django forms with full CSRF protection, vectorized via Scikit-learn TF-IDF, and logged to the SQLite database with calibrated probability bounds.
+            </p>
+            <hr class="text-muted my-3">
+            <div class="d-flex justify-content-between text-muted small mb-1">
+                <span>Total Stored Records:</span>
+                <strong class="text-dark font-monospace">{{ total_count }}</strong>
+            </div>
+            <div class="d-flex justify-content-between text-muted small mb-1">
+                <span>Model Type:</span>
+                <strong class="text-dark">Logistic Regression</strong>
+            </div>
+            <div class="d-flex justify-content-between text-muted small">
+                <span>Backend Framework:</span>
+                <strong class="text-primary">Django 5.0+</strong>
+            </div>
+        </div>
+
+        <!-- Recent Queries Card -->
+        {% if recent_predictions %}
+        <div class="card shadow-sm border-0 rounded-4 p-4">
+            <h6 class="fw-bold text-dark mb-3"><i class="bi bi-clock-history text-secondary me-2"></i>Recent Predictions</h6>
+            <div class="list-group list-group-flush small">
+                {% for item in recent_predictions %}
+                <a href="{% url 'detector:result' item.id %}" class="list-group-item list-group-item-action px-0 py-2 border-0 d-flex justify-content-between align-items-center">
+                    <span class="text-truncate me-2" style="max-width: 170px;">{{ item.snippet }}</span>
+                    <span class="badge {% if item.prediction == 'REAL' %}bg-success-subtle text-success{% else %}bg-danger-subtle text-danger{% endif %} rounded-pill font-monospace">
+                        {{ item.prediction }} ({{ item.confidence|floatformat:1 }}%)
+                    </span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll('.sample-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const text = btn.getAttribute('data-text');
+        const input = document.getElementById('news_text_input');
+        if (input) {
+            input.value = text;
+            input.focus();
+        }
+    });
+});
+document.getElementById('clearBtn')?.addEventListener('click', () => {
+    const input = document.getElementById('news_text_input');
+    if (input) {
+        input.value = '';
+        input.focus();
+    }
+});
+</script>
+{% endblock %}

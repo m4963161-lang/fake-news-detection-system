@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard - Django Fake News Detector{% endblock %}
+
+{% block content %}
+<div class="space-y-4">
+    <!-- Top Summary Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-lg-3">
+            <div class="card shadow-sm border-0 rounded-4 p-3 bg-white">
+                <span class="text-muted small fw-bold text-uppercase">Total Predictions</span>
+                <div class="fs-2 fw-bold text-dark font-monospace mt-1">{{ total }}</div>
+                <small class="text-muted">Persisted in SQLite database</small>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="card shadow-sm border-0 rounded-4 p-3 bg-white">
+                <span class="text-muted small fw-bold text-uppercase">Real News</span>
+                <div class="fs-2 fw-bold text-success font-monospace mt-1">{{ real_count }}</div>
+                <small class="text-success fw-semibold">{{ real_pct }}% verified authentic</small>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="card shadow-sm border-0 rounded-4 p-3 bg-white">
+                <span class="text-muted small fw-bold text-uppercase">Fake News</span>
+                <div class="fs-2 fw-bold text-danger font-monospace mt-1">{{ fake_count }}</div>
+                <small class="text-danger fw-semibold">{{ fake_pct }}% flagged misinformation</small>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="card shadow-sm border-0 rounded-4 p-3 bg-white">
+                <span class="text-muted small fw-bold text-uppercase">Model Accuracy</span>
+                <div class="fs-2 fw-bold text-primary font-monospace mt-1">{{ metrics.accuracy }}%</div>
+                <small class="text-muted">Scikit-learn test split score</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts & Pipeline Cards -->
+    <div class="row g-4 mb-4">
+        <!-- Distribution Card -->
+        <div class="col-lg-5">
+            <div class="card shadow-sm border-0 rounded-4 p-4 h-100">
+                <h6 class="fw-bold text-dark mb-1"><i class="bi bi-pie-chart text-primary me-2"></i>Prediction Distribution</h6>
+                <p class="text-muted small mb-4">Real vs Fake classification proportions</p>
+                <div style="height: 240px;" class="d-flex align-items-center justify-content-center">
+                    <canvas id="ratioChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Model Specs Card -->
+        <div class="col-lg-7">
+            <div class="card shadow-sm border-0 rounded-4 p-4 h-100">
+                <h6 class="fw-bold text-dark mb-1"><i class="bi bi-cpu text-primary me-2"></i>Scikit-learn Pipeline Specifications</h6>
+                <p class="text-muted small mb-3">Model metrics loaded via Django `apps.py` on startup</p>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm align-middle small mb-0">
+                        <tbody>
+                            <tr>
+                                <th class="bg-light" style="width: 35%;">Classification Model</th>
+                                <td class="font-monospace fw-semibold">{{ metrics.model_name }}</td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">Feature Extractor</th>
+                                <td class="font-monospace fw-semibold">{{ metrics.vectorizer }}</td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">Precision Score</th>
+                                <td class="font-monospace text-success fw-bold">{{ metrics.precision }}%</td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">Recall Score</th>
+                                <td class="font-monospace text-primary fw-bold">{{ metrics.recall }}%</td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">F1 Score</th>
+                                <td class="font-monospace text-purple fw-bold">{{ metrics.f1_score }}%</td>
+                            </tr>
+                            <tr>
+                                <th class="bg-light">Django Backend Version</th>
+                                <td class="font-monospace fw-bold text-primary">Django 5.0 (ORM + SQLite)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const ctx = document.getElementById('ratioChart')?.getContext('2d');
+if (ctx) {
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Real News', 'Fake News'],
+            datasets: [{
+                data: [{{ real_count|default:1 }}, {{ fake_count|default:0 }}],
+                backgroundColor: ['#10b981', '#ef4444'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dataset Explorer - Django Fake News Detector{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm border-0 rounded-4 p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h5 class="fw-bold text-dark mb-0"><i class="bi bi-database text-primary me-2"></i>Training Dataset Explorer (dataset/news.csv)</h5>
+            <small class="text-muted">Annotated corpus used to train the TF-IDF Vectorizer and Logistic Regression classifier</small>
+        </div>
+        <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-1 font-monospace">CSV Corpus</span>
+    </div>
+
+    <p class="text-muted small">
+        The model is trained on curated news stories partitioned into training (75%) and test evaluation (25%) splits. Each record includes full text content and verified truth labels.
+    </p>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-sm small align-middle mb-0">
+            <thead class="table-light font-monospace text-uppercase">
+                <tr>
+                    <th style="width: 60px;">Index</th>
+                    <th style="width: 260px;">Headline / Title</th>
+                    <th>Text Body Excerpt</th>
+                    <th style="width: 100px;">Ground Truth</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="font-monospace fw-bold">#0</td>
+                    <td class="fw-semibold">You Can Smell Hillary’s Fear</td>
+                    <td class="text-muted">Daniel Greenfield, a Shillman Journalism Fellow at the Freedom Center, is a New York writer focusing on radical Islam...</td>
+                    <td><span class="badge bg-danger-subtle text-danger font-monospace">FAKE</span></td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fw-bold">#1</td>
+                    <td class="fw-semibold">Watch: The Moment Trump Was Rushed Off Stage</td>
+                    <td class="text-muted">Donald Trump was rushed off stage by Secret Service agents during a rally in Reno, Nevada after a disturbance in the crowd...</td>
+                    <td><span class="badge bg-success-subtle text-success font-monospace">REAL</span></td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fw-bold">#2</td>
+                    <td class="fw-semibold">Kerry to go to Paris in gesture of sympathy</td>
+                    <td class="text-muted">U.S. Secretary of State John Kerry said on Monday he will travel to Paris this week to offer condolences in person...</td>
+                    <td><span class="badge bg-success-subtle text-success font-monospace">REAL</span></td>
+                </tr>
+                <tr>
+                    <td class="font-monospace fw-bold">#3</td>
+                    <td class="fw-semibold">Secret Underground Labs Bio-Engineer New Viruses</td>
+                    <td class="text-muted">Classified defense memos allegedly reveal underground biolabs testing synthetic pathogen contagions on unsuspecting populations...</td>
+                    <td><span class="badge bg-danger-subtle text-danger font-monospace">FAKE</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

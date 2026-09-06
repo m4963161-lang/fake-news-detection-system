@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Prediction Result - FakeDetect{% endblock %}
+
+{% block content %}
+<div class="result-page-container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            
+            <!-- TOP RESULT HERO CARD -->
+            <div class="card result-card shadow-sm mb-4 border-0 {% if record.prediction == 'REAL' %}result-real-border{% else %}result-fake-border{% endif %}">
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <span class="text-uppercase tracking-wider small fw-bold text-muted d-block mb-2">Model Prediction Result</span>
+                        
+                        {% if record.prediction == 'REAL' %}
+                        <div class="prediction-badge badge-real d-inline-flex align-items-center gap-2 px-4 py-2 rounded-pill mb-3">
+                            <i class="bi bi-patch-check-fill fs-3 text-success"></i>
+                            <span class="fs-2 fw-extrabold text-success">REAL NEWS</span>
+                        </div>
+                        <p class="text-muted mb-0">The linguistic structure, neutral terminology, and stylistic markers align with authentic reporting.</p>
+                        {% else %}
+                        <div class="prediction-badge badge-fake d-inline-flex align-items-center gap-2 px-4 py-2 rounded-pill mb-3">
+                            <i class="bi bi-exclamation-octagon-fill fs-3 text-danger"></i>
+                            <span class="fs-2 fw-extrabold text-danger">FAKE NEWS</span>
+                        </div>
+                        <p class="text-muted mb-0">The submitted text exhibits characteristics typical of sensationalism, unverified claims, or emotional manipulation.</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- CONFIDENCE METER -->
+                    <div class="confidence-section bg-light rounded-4 p-4 mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-bold text-dark">
+                                <i class="bi bi-speedometer2 text-primary me-2"></i>Prediction Confidence Score
+                            </span>
+                            <span class="fs-4 fw-extrabold {% if record.prediction == 'REAL' %}text-success{% else %}text-danger{% endif %}">
+                                {{ record.confidence }}%
+                            </span>
+                        </div>
+                        <div class="progress progress-lg rounded-pill" style="height: 14px;">
+                            <div class="progress-bar {% if record.prediction == 'REAL' %}bg-success{% else %}bg-danger{% endif %}" 
+                                 role="progressbar" 
+                                 style="width: {{ record.confidence }}%;" 
+                                 aria-valuenow="{{ record.confidence }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between text-muted small mt-2">
+                            <span>0% (Uncertain)</span>
+                            <span>50% (Neutral)</span>
+                            <span>100% (High Confidence)</span>
+                        </div>
+                    </div>
+
+                    <!-- ORIGINAL NEWS DISPLAY -->
+                    <div class="original-news-card mb-4">
+                        <h6 class="fw-bold text-dark mb-2">
+                            <i class="bi bi-file-text text-primary me-2"></i>Original Submitted News Text
+                        </h6>
+                        <div class="p-3 bg-white rounded-3 border text-secondary font-monospace small" style="white-space: pre-wrap; max-height: 250px; overflow-y: auto;">
+                            {{ record.news_text }}
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-2 small text-muted">
+                            <span><i class="bi bi-hash me-1"></i>Record ID: #{{ record.id }}</span>
+                            <span><i class="bi bi-calendar3 me-1"></i>Analyzed: {{ record.created_at.strftime('%d %b %Y %I:%M %p') }}</span>
+                        </div>
+                    </div>
+
+                    <!-- NLP DIAGNOSTIC BREAKDOWN ACCORDION -->
+                    {% if breakdown %}
+                    <div class="accordion mb-4" id="nlpAccordion">
+                        <div class="accordion-item border rounded-3 overflow-hidden">
+                            <h2 class="accordion-header" id="headingNLP">
+                                <button class="accordion-button collapsed bg-light text-dark fw-semibold" type="button" data-bs-dismiss="collapse" data-bs-toggle="collapse" data-bs-target="#collapseNLP" aria-expanded="false" aria-controls="collapseNLP">
+                                    <i class="bi bi-braces text-primary me-2"></i>NLP Preprocessing Pipeline Diagnostics
+                                </button>
+                            </h2>
+                            <div id="collapseNLP" class="accordion-collapse collapse" aria-labelledby="headingNLP" data-bs-parent="#nlpAccordion">
+                                <div class="accordion-body bg-white">
+                                    <div class="row g-3 small mb-3">
+                                        <div class="col-sm-4">
+                                            <div class="border rounded p-2 text-center bg-light">
+                                                <div class="text-muted">Raw Word Count</div>
+                                                <div class="fw-bold fs-6">{{ breakdown.raw_word_count }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="border rounded p-2 text-center bg-light">
+                                                <div class="text-muted">Cleaned Tokens</div>
+                                                <div class="fw-bold fs-6">{{ breakdown.processed_word_count }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="border rounded p-2 text-center bg-light">
+                                                <div class="text-muted">Stopwords Filtered</div>
+                                                <div class="fw-bold fs-6">{{ breakdown.removed_stopwords_count }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h6 class="fw-bold small text-muted mb-2">Normalized Tokens (TF-IDF Input):</h6>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        {% for token in breakdown.tokens[:30] %}
+                                        <span class="badge bg-light text-dark border font-monospace">{{ token }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- ETHICAL DISCLAIMER -->
+                    <div class="alert alert-light border text-muted small mb-4 d-flex align-items-start gap-2">
+                        <i class="bi bi-info-circle-fill text-primary mt-1"></i>
+                        <div>
+                            <strong>Ethical Machine Learning Disclaimer:</strong> This score represents a statistical classification generated by a TF-IDF Natural Language Processing and Logistic Regression pipeline. It evaluates stylistic patterns and vocabulary distributions, and should be considered an advisory analytical tool alongside independent journalistic verification.
+                        </div>
+                    </div>
+
+                    <!-- ACTION BUTTONS -->
+                    <div class="text-center d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="{{ url_for('index') }}" class="btn btn-primary px-4 py-2">
+                            <i class="bi bi-arrow-left me-2"></i>CHECK ANOTHER NEWS
+                        </a>
+                        <a href="{{ url_for('history') }}" class="btn btn-outline-secondary px-4 py-2">
+                            <i class="bi bi-clock-history me-2"></i>View in History
+                        </a>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary px-4 py-2">
+                            <i class="bi bi-bar-chart-line me-2"></i>Analytics Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

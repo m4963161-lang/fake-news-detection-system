@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Architecture - Django Fake News Detector{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm border-0 rounded-4 p-4 mb-4">
+    <h4 class="fw-bold text-dark mb-2"><i class="bi bi-layers text-primary me-2"></i>Django System Architecture & MVT Pattern</h4>
+    <p class="text-muted small leading-relaxed mb-4">
+        This project has been architected using <strong>Django 5.0</strong> following the standard <strong>Model-View-Template (MVT)</strong> design pattern. It integrates <strong>Scikit-learn</strong> for supervised machine learning and uses <strong>SQLite</strong> via the Django ORM for ACID-compliant persistence.
+    </p>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="p-3 bg-light rounded-3 border h-100">
+                <h6 class="fw-bold text-primary mb-2"><i class="bi bi-database me-1"></i>Model (ORM)</h6>
+                <p class="text-muted small mb-0">
+                    Defines <code>Prediction</code>, <code>AuditLog</code>, and <code>Feedback</code> schema in <code>detector/models.py</code>. Manages SQLite queries, migrations, and model methods without raw SQL.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-3 bg-light rounded-3 border h-100">
+                <h6 class="fw-bold text-primary mb-2"><i class="bi bi-code-slash me-1"></i>View (Controller)</h6>
+                <p class="text-muted small mb-0">
+                    Handles HTTP requests in <code>detector/views.py</code>. Validates input using <code>NewsAnalysisForm</code>, executes TF-IDF transforms, runs the classifier, and returns rendered templates or JSON REST APIs.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-3 bg-light rounded-3 border h-100">
+                <h6 class="fw-bold text-primary mb-2"><i class="bi bi-window me-1"></i>Template (Presentation)</h6>
+                <p class="text-muted small mb-0">
+                    Django HTML templates in <code>templates/detector/</code> utilizing template tags, CSRF tokens (<code>{% csrf_token %}</code>), template inheritance (<code>{% extends %}</code>), and Bootstrap 5 styling.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Django Admin & Security -->
+    <div class="p-3 bg-primary-subtle text-primary-emphasis rounded-3 border border-primary-subtle">
+        <h6 class="fw-bold mb-1"><i class="bi bi-shield-check me-2"></i>Django Built-in Security Features Active</h6>
+        <ul class="mb-0 small ps-3">
+            <li>Cross-Site Request Forgery (CSRF) protection on all POST endpoints.</li>
+            <li>SQL Injection prevention via parameterized Django ORM queries.</li>
+            <li>Cross-Site Scripting (XSS) protection via automatic template escaping.</li>
+            <li>Django Admin interface available at <code>/admin/</code> for dataset auditing and user management.</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
