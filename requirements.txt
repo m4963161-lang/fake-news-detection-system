@@ -103,7 +103,6 @@ keras==3.12.0
 keras-facenet==0.3.2
 kiwisolver==1.4.9
 lazy-loader==0.5
-lib6300 @ https://sigproc.mit.edu/_static/fall24/software/lib6300-0.0.6.tar.gz#sha256=a8b6acf63742d66cad9d7f7072dc8a150fcf2a28fffa7d1f835f51fbc1a056e1
 libclang==18.1.1
 librosa==0.11.0
 llvmlite==0.46.0
